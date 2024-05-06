@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  web:
+    build: ./st_web
+    ports:
+      - "80:80"
+    volumes:
+      - .:/app
+    environment:
+      TRANSLATOR_PROVIDER: deepl
+    depends_on:
+      - backend
+    networks:
+      - mynet
+
+  backend:
+    build: ./backend
+    ports:
+      - "8081:8081"
+    volumes:
+      - .:/app
+    environment:
+      LLM_PROVIDER: groq
+      LLM_MODEL: llama3-70b-8192
+      LLM_API_TOKEN: "your-api-token-here"
+    depends_on:
+      - db
+    networks:
+      - mynet
+
+  db:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+    networks:
+      - mynet
+
+networks:
+  mynet:
+    driver: bridge
