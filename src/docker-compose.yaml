@@ -9,6 +9,7 @@ services:
       - .:/app
     environment:
       TRANSLATOR_PROVIDER: deepl
+      API_URL: "http://backend:8081"
     depends_on:
       - backend
     networks:
