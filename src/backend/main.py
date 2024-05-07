@@ -1,10 +1,10 @@
 '''
 Author: hibana2077 hibana2077@gmail.com
 Date: 2024-05-06 21:09:40
-LastEditors: hibana2077 hibana2077@gmail.com
-LastEditTime: 2024-05-06 23:55:55
+LastEditors: hibana2077 hibana2077@gmaill.com
+LastEditTime: 2024-05-07 14:08:26
 FilePath: \Digital-TA\src\backend\main.py
-Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+Description: Here is the main file for the FastAPI server.
 '''
 from langchain_community.vectorstores.faiss import FAISS
 from langchain_community.embeddings import OllamaEmbeddings
@@ -39,7 +39,7 @@ def test_embeddings(text: str):
     time_end = time.time()
     return {"embeddings": embeddings_list, "time": time_end - time_start,"model_name":embeddings.model}
 
-@app.get("/test/file_count")
+@app.get("/file_count")
 def test_file_count():
     directory = "files"  # 設定要檢查的資料夾名稱
     if os.path.exists(directory):
