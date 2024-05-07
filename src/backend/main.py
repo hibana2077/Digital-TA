@@ -2,7 +2,7 @@
 Author: hibana2077 hibana2077@gmail.com
 Date: 2024-05-06 21:09:40
 LastEditors: hibana2077 hibana2077@gmaill.com
-LastEditTime: 2024-05-07 14:23:26
+LastEditTime: 2024-05-07 14:25:44
 FilePath: \Digital-TA\src\backend\main.py
 Description: Here is the main file for the FastAPI server.
 '''
@@ -30,6 +30,12 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
+    """
+    A function that handles the root endpoint.
+
+    Returns:
+        dict: A dictionary with the message "Hello: World".
+    """
     return {"Hello": "World"}
 
 @app.get("/test/embeddings")
@@ -41,6 +47,17 @@ def test_embeddings(text: str):
 
 @app.get("/file_count")
 def test_file_count():
+    """
+    Get the count and names of files in a directory.
+
+    Returns:
+        dict: A dictionary containing the file count and file names.
+            - file_count (int): The number of files in the directory.
+            - file_names (list): A list of file names in the directory.
+
+            If the directory does not exist, the dictionary will also contain:
+            - message (str): A message indicating that the directory does not exist.
+    """
     directory = "files"  # 設定要檢查的資料夾名稱
     if os.path.exists(directory):
         files = os.listdir(directory)  # 獲取資料夾中的所有檔案名稱
@@ -50,15 +67,32 @@ def test_file_count():
 
 @app.get("/status/mertics")
 def get_status_mertics():
+    """
+    Retrieves the status metrics.
+
+    Returns:
+        dict: A dictionary containing the textbook count, subject count, and dialogue count.
+    """
     return {"textbook_count": 3, "subject_count": 2, "dialogue_count": 86}
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
-    file_location = f"files/{file.filename}"
-    os.makedirs(os.path.dirname(file_location), exist_ok=True)
-    with open(file_location, "wb+") as file_object:
-        file_object.write(await file.read())
-    return JSONResponse(status_code=200, content={"message": "File uploaded successfully", "file_path": file_location})
+        """
+        Uploads a file to the server.
+
+        Parameters:
+        - file: The file to be uploaded.
+
+        Returns:
+        - JSONResponse: A JSON response indicating the status of the upload.
+            - message: A message indicating whether the file was uploaded successfully.
+            - file_path: The path where the file is saved on the server.
+        """
+        file_location = f"files/{file.filename}"
+        os.makedirs(os.path.dirname(file_location), exist_ok=True)
+        with open(file_location, "wb+") as file_object:
+                file_object.write(await file.read())
+        return JSONResponse(status_code=200, content={"message": "File uploaded successfully", "file_path": file_location})
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8081) # In docker need to change to 0.0.0.0
