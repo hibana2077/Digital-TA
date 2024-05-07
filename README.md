@@ -1,8 +1,8 @@
 <!--
  * @Author: hibana2077 hibana2077@gmail.com
  * @Date: 2024-05-05 10:00:24
- * @LastEditors: hibana2077 hibana2077@gmail.com
- * @LastEditTime: 2024-05-06 19:36:51
+ * @LastEditors: hibana2077 hibana2077@gmaill.com
+ * @LastEditTime: 2024-05-07 17:17:06
  * @FilePath: \Digital-TA\README.md
  * @Description: 
 -->
@@ -29,7 +29,7 @@ The planned development roadmap for the Digital TA project is as follows:
 
 ## Documentation
 
-![Documentation](https://digitalta.hibana2077.com)
+[Documentation](https://digitalta.hibana2077.com)
 
 ## License
 
