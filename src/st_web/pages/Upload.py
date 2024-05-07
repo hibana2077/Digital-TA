@@ -4,7 +4,7 @@ import requests
 st.header("Upload Textbooks")
 
 uploaded_file = st.file_uploader("Upload your PDF file", type=['pdf'])
-password = st.text_input(placeholder="password")
+password = st.text_input(label="upload_passwd",placeholder="password")
 if uploaded_file is not None: # need password validation
     # 顯示一些關於文件的基本信息
     st.write("Filename:", uploaded_file.name)
