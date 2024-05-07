@@ -2,7 +2,7 @@
 Author: hibana2077 hibana2077@gmail.com
 Date: 2024-05-06 21:09:40
 LastEditors: hibana2077 hibana2077@gmaill.com
-LastEditTime: 2024-05-07 14:08:26
+LastEditTime: 2024-05-07 14:23:26
 FilePath: \Digital-TA\src\backend\main.py
 Description: Here is the main file for the FastAPI server.
 '''
@@ -47,6 +47,10 @@ def test_file_count():
         return {"file_count": len(files), "file_names": files}
     else:
         return {"file_count": 0, "message": "No such directory."}
+
+@app.get("/status/mertics")
+def get_status_mertics():
+    return {"textbook_count": 3, "subject_count": 2, "dialogue_count": 86}
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):

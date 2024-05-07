@@ -6,6 +6,12 @@ import os
 # Constants
 API_URL = os.getenv("API_URL", "http://localhost:8081")
 
+# Request to the API
+status_response = requests.get(f"{API_URL}/status/mertics")
+textbook_count = status_response.json()["textbook_count"]
+subject_count = status_response.json()["subject_count"]
+dialogue_count = status_response.json()["dialogue_count"]
+
 # Page Widgets
 
 ## header
@@ -21,9 +27,9 @@ col2_logo.image("./assets/logo.webp", width=200)
 
 st.subheader("狀態")
 col1, col2, col3 = st.columns(3)
-col1.metric("教科書資料數", "3 本", "1 本")
-col2.metric("科目數", "2 科", "1 科")
-col3.metric("對話次數", "86 次", "4%")
+col1.metric("教科書資料數", f"{textbook_count} 本", "1 本")
+col2.metric("科目數", f"{subject_count} 科", "1 科")
+col3.metric("對話次數", f"{dialogue_count} 次", "4%")
 st.divider()
 
 ## introduction
