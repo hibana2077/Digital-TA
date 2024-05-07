@@ -11,9 +11,10 @@ python-dotenv
 
 transformers
 datasets
+pypdf
 
 translators
 
 fastapi
 
-pymongo
+redis

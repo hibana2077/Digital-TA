@@ -2,11 +2,12 @@
 Author: hibana2077 hibana2077@gmail.com
 Date: 2024-05-06 21:09:40
 LastEditors: hibana2077 hibana2077@gmaill.com
-LastEditTime: 2024-05-07 14:25:44
+LastEditTime: 2024-05-07 16:52:31
 FilePath: \Digital-TA\src\backend\main.py
 Description: Here is the main file for the FastAPI server.
 '''
 from langchain_community.vectorstores.faiss import FAISS
+from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.embeddings import OllamaEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from fastapi import FastAPI, File, UploadFile
@@ -44,6 +45,15 @@ def test_embeddings(text: str):
     embeddings_list = embeddings.embed_query(text)
     time_end = time.time()
     return {"embeddings": embeddings_list, "time": time_end - time_start,"model_name":embeddings.model}
+
+@app.get("/embedding_count")
+def test_embedding_count():
+    directory = "embeddings"
+    if os.path.exists(directory):
+        files = os.listdir(directory)
+        return {"embedding_count": len(files), "embedding_names": files}
+    else:
+        return {"embedding_count": 0, "message": "No such directory."}
 
 @app.get("/file_count")
 def test_file_count():
@@ -93,6 +103,21 @@ async def upload_file(file: UploadFile = File(...)):
         with open(file_location, "wb+") as file_object:
                 file_object.write(await file.read())
         return JSONResponse(status_code=200, content={"message": "File uploaded successfully", "file_path": file_location})
+
+@app.post("/create_embeddings")
+async def create_embeddings(file_name: str, embedding_name: str, auth_password: str):
+    if auth_password == "admin":
+        time_start = time.time()
+        embeddings = OllamaEmbeddings(model='llama2')
+        loader = PyPDFLoader("files/" + file_name)
+        pages = loader.load_and_split()
+        vectorstore = FAISS.from_documents(pages, embeddings)
+        vectorstore.save_local("embeddings/" + embedding_name)
+        time_end = time.time()
+        return {"message": "Embeddings created successfully", "time": time_end - time_start}
+    else:
+        return {"message": "Authentication failed"}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8081) # In docker need to change to 0.0.0.0
