@@ -33,3 +33,13 @@ st.subheader("Create New Embeddings")
 selected_file = st.selectbox("Select a file to create embeddings from", files)
 embedding_name = st.text_input("Enter a name for the embedding")
 auth_password = st.text_input("Enter the authentication password", type="password")
+
+if st.button("Create Embeddings"):
+    response = requests.post(
+        f"{API_URL}/create_embeddings",
+        json={"file_name": selected_file, "embedding_name": embedding_name, "auth_password": auth_password},
+    )
+    if response.status_code == 200:
+        st.write(response.json()["message"])
+    else:
+        st.write("An error occurred.")
