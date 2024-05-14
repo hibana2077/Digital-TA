@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   web:
     build: ./st_web
@@ -39,7 +37,13 @@ services:
       - /data/redis-data:/data
     networks:
       - mynet
-
+  
+  ollama:
+    restart: always
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    
 networks:
   mynet:
     driver: bridge
