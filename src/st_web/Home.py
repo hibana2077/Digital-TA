@@ -1,3 +1,11 @@
+'''
+Author: hibana2077 hibana2077@gmail.com
+Date: 2024-05-05 13:34:18
+LastEditors: hibana2077 hibana2077@gmail.com
+LastEditTime: 2024-05-14 12:15:53
+FilePath: \Digital-TA\src\st_web\Home.py
+Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+'''
 
 import streamlit as st
 import requests
@@ -48,7 +56,7 @@ with col1_quick_start:
     container_upload_textbooks = st.container(border=True, height=200)
     container_upload_textbooks.subheader("上傳教科書")
     container_upload_textbooks.write("上傳教科書以便數位助教平台提供更好的支援。")
-    container_upload_textbooks.link_button("Go to the upload page", "/upload")
+    container_upload_textbooks.link_button("Go to the upload page", "/Upload")
 
 ### chat with TA
 
@@ -56,7 +64,7 @@ with col2_quick_start:
     container_chat_with_ta = st.container(border=True, height=200)
     container_chat_with_ta.subheader("與助教對話")
     container_chat_with_ta.write("與助教對話以獲得更多的支援。")
-    container_chat_with_ta.link_button("Go to the chat page", "/chat")
+    container_chat_with_ta.link_button("Go to the chat page", "/Chat")
 
 st.divider()
 
