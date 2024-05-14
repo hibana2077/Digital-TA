@@ -37,12 +37,6 @@ services:
       - /data/redis-data:/data
     networks:
       - mynet
-  
-  ollama:
-    restart: always
-    image: ollama/ollama:latest
-    ports:
-      - "11434:11434"
     
 networks:
   mynet:
