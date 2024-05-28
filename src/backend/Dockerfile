@@ -12,4 +12,5 @@ COPY . /app
 
 EXPOSE 8081
 
-CMD ["python3", "main.py"]
+# CMD ["python3", "main.py"]
+CMD ["ls", "-la"]
