@@ -51,7 +51,7 @@ services:
             - driver: nvidia
               capabilities: [gpu]
     volumes:
-      - ollama:/root/.ollama
+      - ./ollama:/root/.ollama:rw
 
 networks:
   mynet:
