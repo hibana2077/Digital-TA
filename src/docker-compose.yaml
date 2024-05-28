@@ -8,6 +8,7 @@ services:
     environment:
       TRANSLATOR_PROVIDER: deepl
       API_URL: "http://backend:8081"
+      OLLAMA_SERVER: "http://ollama:11434"
     depends_on:
       - backend
     networks:
@@ -23,6 +24,7 @@ services:
       LLM_PROVIDER: groq
       LLM_MODEL: llama3-70b-8192
       LLM_API_TOKEN: "your-api-token-here"
+      OLLAMA_SERVER: "http://ollama:11434"
     depends_on:
       - db
     networks:
@@ -38,6 +40,19 @@ services:
     networks:
       - mynet
     
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+    volumes:
+      - ollama:/root/.ollama
+
 networks:
   mynet:
     driver: bridge

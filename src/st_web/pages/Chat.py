@@ -7,8 +7,10 @@ from langchain_core.messages.system import SystemMessage
 import streamlit as st
 import translators as ts
 import requests
+import os
 
 # _ = ts.preaccelerate_and_speedtest(timeout=1.5)
+OLLAMA_SERVER = os.getenv("OLLAMA_SERVER", "http://localhost:11434")
 
 st.header("Chat")
 
@@ -23,7 +25,7 @@ def init_chat_history() -> ChatPromptTemplate:
     return template
 
 chat_tmp = init_chat_history()
-llm = ChatOllama(model="llama2")
+llm = ChatOllama(model="llama2", base_url=OLLAMA_SERVER)
 user_input = st.chat_input("Say something")
 chain = chat_tmp | llm | StrOutputParser()
 

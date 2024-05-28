@@ -1,8 +1,8 @@
 '''
 Author: hibana2077 hibana2077@gmail.com
 Date: 2024-05-06 21:09:40
-LastEditors: hibana2077 hibana2077@gmaill.com
-LastEditTime: 2024-05-07 16:52:31
+LastEditors: hibana2077 hibana2077@gmail.com
+LastEditTime: 2024-05-28 12:56:35
 FilePath: \Digital-TA\src\backend\main.py
 Description: Here is the main file for the FastAPI server.
 '''
@@ -17,7 +17,9 @@ import time
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
-embeddings = OllamaEmbeddings()
+ollama_server = os.getenv("OLLAMA_SERVER", "http://localhost:11434")
+
+embeddings = OllamaEmbeddings(base_url=ollama_server)
 
 app = FastAPI()
 
@@ -108,7 +110,7 @@ async def upload_file(file: UploadFile = File(...)):
 async def create_embeddings(file_name: str, embedding_name: str, auth_password: str):
     if auth_password == "admin":
         time_start = time.time()
-        embeddings = OllamaEmbeddings(model='llama2')
+        embeddings = OllamaEmbeddings(model='llama2', base_url=ollama_server)
         loader = PyPDFLoader("files/" + file_name)
         pages = loader.load_and_split()
         vectorstore = FAISS.from_documents(pages, embeddings)
