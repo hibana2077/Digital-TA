@@ -1,8 +1,8 @@
 <!--
  * @Author: hibana2077 hibana2077@gmail.com
  * @Date: 2024-05-05 10:00:24
- * @LastEditors: hibana2077 hibana2077@gmaill.com
- * @LastEditTime: 2024-05-07 17:17:06
+ * @LastEditors: hibana2077 hibana2077@gmail.com
+ * @LastEditTime: 2024-05-28 12:11:44
  * @FilePath: \Digital-TA\README.md
  * @Description: 
 -->
@@ -26,6 +26,29 @@ The planned development roadmap for the Digital TA project is as follows:
 
 - [ ] Develop a user-friendly interface using Streamlit, coupled with a robust backend powered by FastAPI.
 - [ ] Implement a modern and intuitive user interface using Astro.
+
+## Usage
+
+To run the Digital TA project, follow these steps:
+
+1. Clone the repository to your local machine:
+
+```bash
+git clone https://github.com/hibana2077/Digital-TA.git
+```
+
+2. Change into the project directory:
+
+```bash
+cd Digital-TA
+```
+
+3. Run Docker Compose to build and start the application:
+
+```bash
+cd src
+sudo docker-compose up --build -d
+```
 
 ## Documentation
 
