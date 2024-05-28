@@ -2,7 +2,7 @@
 Author: hibana2077 hibana2077@gmail.com
 Date: 2024-05-06 21:09:40
 LastEditors: hibana2077 hibana2077@gmail.com
-LastEditTime: 2024-05-28 12:56:35
+LastEditTime: 2024-05-28 14:19:08
 FilePath: \Digital-TA\src\backend\main.py
 Description: Here is the main file for the FastAPI server.
 '''
@@ -18,7 +18,7 @@ import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
 ollama_server = os.getenv("OLLAMA_SERVER", "http://localhost:11434")
-
+HOST = os.getenv("HOST", "127.0.0.1")
 embeddings = OllamaEmbeddings(base_url=ollama_server)
 
 app = FastAPI()
@@ -122,4 +122,4 @@ async def create_embeddings(file_name: str, embedding_name: str, auth_password: 
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8081) # In docker need to change to 0.0.0.0
+    uvicorn.run(app, host=HOST, port=8081) # In docker need to change to 0.0.0.0

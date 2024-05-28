@@ -6,7 +6,7 @@ services:
     volumes:
       - ./st_web:/app
     environment:
-      TRANSLATOR_PROVIDER: deepl
+      TRANSLATOR_PROVIDER: google
       API_URL: "http://backend:8081"
       OLLAMA_SERVER: "http://ollama:11434"
     depends_on:
@@ -21,6 +21,7 @@ services:
     volumes:
       - ./backend:/app
     environment:
+      HOST: "0.0.0.0"
       LLM_PROVIDER: groq
       LLM_MODEL: llama3-70b-8192
       LLM_API_TOKEN: "your-api-token-here"

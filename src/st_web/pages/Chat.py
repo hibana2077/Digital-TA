@@ -11,6 +11,7 @@ import os
 
 # _ = ts.preaccelerate_and_speedtest(timeout=1.5)
 OLLAMA_SERVER = os.getenv("OLLAMA_SERVER", "http://localhost:11434")
+TRANSLATOR_PROVIDER = os.getenv("TRANSLATOR_PROVIDER", "google")
 
 st.header("Chat")
 
@@ -31,7 +32,7 @@ chain = chat_tmp | llm | StrOutputParser()
 
 if user_input:
     with st.status("Thinking..."):
-        chat_tmp.append(HumanMessage(ts.translate_text(user_input, translator="google", to_language="en")))
+        chat_tmp.append(HumanMessage(ts.translate_text(user_input, translator=TRANSLATOR_PROVIDER, to_language="en")))
         response = chain.invoke({})
         chat_tmp.append(AIMessage(response))
         st.session_state['chat_history'] = chat_tmp
@@ -42,8 +43,8 @@ if len(st.session_state['chat_history'].messages) == 1:
 for message in st.session_state['chat_history'].messages:
     if isinstance(message, HumanMessage):
         with st.chat_message("user"):
-            st.write(ts.translate_text(message.content, translator="google", to_language="zh-TW"))
+            st.write(ts.translate_text(message.content, translator=TRANSLATOR_PROVIDER, to_language="zh-TW"))
     elif isinstance(message, AIMessage):
         with st.chat_message("assistant"):
-            st.write(ts.translate_text(message.content, translator="google", to_language="zh-TW"))
+            st.write(ts.translate_text(message.content, translator=TRANSLATOR_PROVIDER, to_language="zh-TW"))
     
