@@ -1,4 +1,3 @@
-
 import streamlit as st
 import requests
 import os
@@ -25,6 +24,7 @@ if response.status_code == 200 and response.json()["file_count"] > 0:
     for file in files:
         st.write(file)
 else:
+    files = []
     st.write("No files have been uploaded yet.")
 
 # make new embeddings
