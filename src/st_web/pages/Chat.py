@@ -1,7 +1,6 @@
 from langchain_community.chat_models import ChatOllama
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.prompts import PromptTemplate
 from langchain_core.messages.ai import AIMessage
 from langchain_core.messages.human import HumanMessage
 from langchain_core.messages.system import SystemMessage
@@ -14,7 +13,7 @@ import os
 OLLAMA_SERVER = os.getenv("OLLAMA_SERVER", "http://localhost:11434")
 BACKEND_SERVER = os.getenv("BACKEND_SERVER", "http://localhost:8081")
 TRANSLATOR_PROVIDER = os.getenv("TRANSLATOR_PROVIDER", "google")
-EXTRACT_PROMPT = PromptTemplate.from_template(
+EXTRACT_PROMPT = ChatPromptTemplate.from_template(
     "You are an Top algorithm, you need to according to user input extract information from the content. user input: {user_input}, content: {content}"
 )
 
@@ -67,9 +66,9 @@ if user_input:
             for embedding in embeddings_search_result["results"]:
                 # embedding is dict with keys: "page_content", "metadata"
                 # metadata is dict with keys: "page", "source"
-                extract_template = EXTRACT_PROMPT.format(user_input=user_input, content=embedding["page_content"])
+                extract_template = EXTRACT_PROMPT
                 extract_chain = extract_template | llm | StrOutputParser()
-                extract_response = extract_chain.invoke({})
+                extract_response = extract_chain.invoke({"user_input": user_input, "content": embedding["page_content"]})
                 extracted_info += f"Page {embedding['metadata']['page']}: {extract_response}\n"
             
         with st.status("Digital TA Thinking..."):
