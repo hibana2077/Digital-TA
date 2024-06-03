@@ -2,11 +2,15 @@
  * @Author: hibana2077 hibana2077@gmail.com
  * @Date: 2024-05-05 10:00:24
  * @LastEditors: hibana2077 hibana2077@gmaill.com
- * @LastEditTime: 2024-06-03 19:05:16
+ * @LastEditTime: 2024-06-03 19:08:03
  * @FilePath: \Digital-TA\README.md
  * @Description: 
 -->
 # Digital-TA
+
+<p align="center">
+    <img src="https://skillicons.dev/icons?i=redis,fastapi,py,docker" /><br>
+</p>
 
 ## Introduction
 
