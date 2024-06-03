@@ -2,7 +2,7 @@
 Author: hibana2077 hibana2077@gmail.com
 Date: 2024-05-06 21:09:40
 LastEditors: hibana2077 hibana2077@gmaill.com
-LastEditTime: 2024-06-03 16:18:53
+LastEditTime: 2024-06-03 16:30:12
 FilePath: \Digital-TA\src\backend\main.py
 Description: Here is the main file for the FastAPI server.
 '''
@@ -129,7 +129,7 @@ async def embed_query(data: dict):
     user_input: str = data["user_input"]
     embeddings = OllamaEmbeddings(model='llama2', base_url=ollama_server)
     # load the embeddings
-    vectorstore = FAISS.load_local("embeddings/" + embedding_name,embeddings)
+    vectorstore = FAISS.load_local("embeddings/" + embedding_name,embeddings,allow_dangerous_deserialization=True)
     # do similarity search
     results = vectorstore.similarity_search(user_input)
     return {"results": results}
