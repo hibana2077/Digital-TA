@@ -2,7 +2,7 @@
 Author: hibana2077 hibana2077@gmail.com
 Date: 2024-05-06 21:09:40
 LastEditors: hibana2077 hibana2077@gmaill.com
-LastEditTime: 2024-06-03 12:37:43
+LastEditTime: 2024-06-03 16:18:53
 FilePath: \Digital-TA\src\backend\main.py
 Description: Here is the main file for the FastAPI server.
 '''
@@ -123,6 +123,16 @@ async def create_embeddings(data: dict):
     else:
         return {"message": "Authentication failed"}
 
+@app.post("/embed_query")
+async def embed_query(data: dict):
+    embedding_name: str = data["embedding_name"]
+    user_input: str = data["user_input"]
+    embeddings = OllamaEmbeddings(model='llama2', base_url=ollama_server)
+    # load the embeddings
+    vectorstore = FAISS.load_local("embeddings/" + embedding_name,embeddings)
+    # do similarity search
+    results = vectorstore.similarity_search(user_input)
+    return {"results": results}
 
 if __name__ == "__main__":
     uvicorn.run(app, host=HOST, port=8081) # In docker need to change to 0.0.0.0
