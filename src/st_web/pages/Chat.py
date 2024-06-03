@@ -26,6 +26,7 @@ def get_all_embeddings() -> list:
         return []
 
 def embeddings_search(user_input: str, embedding_name: str) -> dict:
+    user_input = ts.translate_text(user_input, translator=TRANSLATOR_PROVIDER, to_language="en")
     response = requests.post(f"{BACKEND_SERVER}/embed_query", json={"user_input": user_input, "embedding_name": embedding_name})
     if response.status_code == 200:
         return response.json()
