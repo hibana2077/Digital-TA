@@ -1,8 +1,8 @@
 '''
 Author: hibana2077 hibana2077@gmail.com
 Date: 2024-05-06 21:09:40
-LastEditors: hibana2077 hibana2077@gmail.com
-LastEditTime: 2024-05-28 14:19:08
+LastEditors: hibana2077 hibana2077@gmaill.com
+LastEditTime: 2024-06-03 12:37:43
 FilePath: \Digital-TA\src\backend\main.py
 Description: Here is the main file for the FastAPI server.
 '''
@@ -107,7 +107,10 @@ async def upload_file(file: UploadFile = File(...)):
         return JSONResponse(status_code=200, content={"message": "File uploaded successfully", "file_path": file_location})
 
 @app.post("/create_embeddings")
-async def create_embeddings(file_name: str, embedding_name: str, auth_password: str):
+async def create_embeddings(data: dict):
+    file_name: str = data["file_name"]
+    embedding_name: str = data["embedding_name"]
+    auth_password: str = data["auth_password"]
     if auth_password == "admin":
         time_start = time.time()
         embeddings = OllamaEmbeddings(model='llama2', base_url=ollama_server)
