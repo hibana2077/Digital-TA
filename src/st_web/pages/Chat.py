@@ -1,6 +1,7 @@
 from langchain_community.chat_models import ChatOllama
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import PromptTemplate
 from langchain_core.messages.ai import AIMessage
 from langchain_core.messages.human import HumanMessage
 from langchain_core.messages.system import SystemMessage
@@ -13,8 +14,10 @@ import os
 OLLAMA_SERVER = os.getenv("OLLAMA_SERVER", "http://localhost:11434")
 BACKEND_SERVER = os.getenv("BACKEND_SERVER", "http://localhost:8081")
 TRANSLATOR_PROVIDER = os.getenv("TRANSLATOR_PROVIDER", "google")
+EXTRACT_PROMPT = PromptTemplate.from_template(
+    "You are an Top algorithm, you need to according to user input extract information from the content. user input: {user_input}, content: {content}"
+)
 
-st.header("Chat")
 
 def get_all_embeddings() -> list:
     response = requests.get(f"{BACKEND_SERVER}/embedding_count")
@@ -40,20 +43,41 @@ def init_chat_history() -> ChatPromptTemplate:
         template = st.session_state['chat_history']
     return template
 
+header_col, embeddings_select_col = st.columns([0.7,0.3])
+
+with header_col:
+    st.header("Chat")
+
+with embeddings_select_col:
+    embeddings = get_all_embeddings()
+    embeddings_select = st.selectbox("Select an embedding", embeddings, index=None)
+
 chat_tmp = init_chat_history()
 llm = ChatOllama(model="llama2", base_url=OLLAMA_SERVER)
 user_input = st.chat_input("You can start a conversation with the AI Teaching Assistant here.")
 chain = chat_tmp | llm | StrOutputParser()
 
 if user_input:
-    with st.status("Thinking..."):
-        chat_tmp.append(HumanMessage(ts.translate_text(user_input, translator=TRANSLATOR_PROVIDER, to_language="en")))
-        response = chain.invoke({})
-        chat_tmp.append(AIMessage(response))
-        st.session_state['chat_history'] = chat_tmp
+    if embeddings_select != "":
+        with st.status("Searching for book content..."):
+            embeddings_search_result = embeddings_search(user_input, embeddings_select)
 
-if len(st.session_state['chat_history'].messages) == 1:
-    st.html("<p align='center'><h3>Start a conversation with the AI Teaching Assistant!</h3></p>")
+        with st.status("Extracting information..."):
+            extracted_info = ""
+            for embedding in embeddings_search_result["results"]:
+                # embedding is dict with keys: "page_content", "metadata"
+                # metadata is dict with keys: "page", "source"
+                extract_template = EXTRACT_PROMPT.format(user_input=user_input, content=embedding["page_content"])
+                extract_chain = extract_template | llm | StrOutputParser()
+                extract_response = extract_chain.invoke({})
+                extracted_info += f"Page {embedding['metadata']['page']}: {extract_response}\n"
+            
+        with st.status("Digital TA Thinking..."):
+            chat_tmp.append(SystemMessage(f"Extracted information from the content: {extracted_info}"))
+            chat_tmp.append(HumanMessage(ts.translate_text(user_input, translator=TRANSLATOR_PROVIDER, to_language="en")))
+            response = chain.invoke({})
+            chat_tmp.append(AIMessage(response))
+            st.session_state['chat_history'] = chat_tmp
 
 for message in st.session_state['chat_history'].messages:
     if isinstance(message, HumanMessage):
