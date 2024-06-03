@@ -2,7 +2,7 @@
  * @Author: hibana2077 hibana2077@gmail.com
  * @Date: 2024-05-05 10:00:24
  * @LastEditors: hibana2077 hibana2077@gmaill.com
- * @LastEditTime: 2024-06-03 19:08:03
+ * @LastEditTime: 2024-06-03 19:13:42
  * @FilePath: \Digital-TA\README.md
  * @Description: 
 -->
@@ -57,6 +57,17 @@ sudo docker-compose up --build -d
 ## Documentation
 
 [Documentation](https://digitalta.hibana2077.com)
+
+## Contributing
+
+Contributions are welcome! To contribute to the Digital TA project, follow these steps:
+
+1. Fork the repository.
+2. Create a new branch.
+3. Make your changes.
+4. Commit your changes.
+5. Push your changes to your fork.
+6. Create a pull request.
 
 ## License
 
