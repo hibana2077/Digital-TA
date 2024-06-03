@@ -40,6 +40,6 @@ if st.button("Create Embeddings"):
         json={"file_name": selected_file, "embedding_name": embedding_name, "auth_password": auth_password},
     )
     if response.status_code == 200:
-        st.write(response.json()["message"])
+        st.success(response.json()["message"])
     else:
-        st.write("An error occurred.")
+        st.warning("An error occurred.")
