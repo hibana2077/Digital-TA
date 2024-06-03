@@ -16,6 +16,13 @@ TRANSLATOR_PROVIDER = os.getenv("TRANSLATOR_PROVIDER", "google")
 
 st.header("Chat")
 
+def embeddings_search(user_input: str, embedding_name: str) -> dict:
+    response = requests.get(f"{BACKEND_SERVER}/embed_query", params={"user_input": user_input, "embedding_name": embedding_name})
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {"embeddings": [], "time": 0}
+
 def init_chat_history() -> ChatPromptTemplate:
     if 'chat_history' not in st.session_state:
         template = ChatPromptTemplate.from_messages([
