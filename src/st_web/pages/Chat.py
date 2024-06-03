@@ -27,7 +27,7 @@ def init_chat_history() -> ChatPromptTemplate:
 
 chat_tmp = init_chat_history()
 llm = ChatOllama(model="llama2", base_url=OLLAMA_SERVER)
-user_input = st.chat_input("Say something")
+user_input = st.chat_input("You can start a conversation with the AI Teaching Assistant here.")
 chain = chat_tmp | llm | StrOutputParser()
 
 if user_input:
