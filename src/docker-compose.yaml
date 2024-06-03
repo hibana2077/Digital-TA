@@ -8,6 +8,7 @@ services:
     environment:
       TRANSLATOR_PROVIDER: google
       API_URL: "http://backend:8081"
+      BACKEND_SERVER: "http://backend:8081"
       OLLAMA_SERVER: "http://ollama:11434"
     depends_on:
       - backend
