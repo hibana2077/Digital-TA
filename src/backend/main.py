@@ -1,20 +1,22 @@
 '''
 Author: hibana2077 hibana2077@gmail.com
 Date: 2024-05-06 21:09:40
-LastEditors: hibana2077 hibana2077@gmaill.com
-LastEditTime: 2024-06-03 16:35:17
+LastEditors: hibana2077 hibana2077@gmail.com
+LastEditTime: 2024-06-03 22:55:14
 FilePath: \Digital-TA\src\backend\main.py
 Description: Here is the main file for the FastAPI server.
 '''
 from langchain_community.vectorstores.faiss import FAISS
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.embeddings import OllamaEmbeddings
+from contextlib import asynccontextmanager
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 import os
 import time
 import uvicorn
+import requests
 from fastapi.middleware.cors import CORSMiddleware
 
 ollama_server = os.getenv("OLLAMA_SERVER", "http://localhost:11434")
@@ -30,6 +32,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # pull model from ollama
+    _ = requests.post(f"{ollama_server}/api/pull", json={"name": "llama2"})
 
 @app.get("/")
 def read_root():
