@@ -11,6 +11,7 @@ import os
 
 # _ = ts.preaccelerate_and_speedtest(timeout=1.5)
 OLLAMA_SERVER = os.getenv("OLLAMA_SERVER", "http://localhost:11434")
+BACKEND_SERVER = os.getenv("BACKEND_SERVER", "http://localhost:8081")
 TRANSLATOR_PROVIDER = os.getenv("TRANSLATOR_PROVIDER", "google")
 
 st.header("Chat")
