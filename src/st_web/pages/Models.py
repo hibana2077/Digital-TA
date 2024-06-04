@@ -24,6 +24,16 @@ st.markdown("## Local Models")
 local_models = get_local_models()
 st.table(local_models)
 
+st.markdown("## Change Chat Model")
+local_models = get_local_models()
+local_models_list = [model["name"] for model in local_models]
+model_name = st.selectbox("Select a model", local_models_list, index=None)
+if model_name != None and st.button("Change Model"):
+    if "chat_model" in st.session_state:
+        del st.session_state["chat_model"]
+    st.session_state["chat_model"] = model_name
+    st.success(f"Model changed to {model_name}")
+
 st.markdown("## Pull Model")
 st.markdown("Pull a model from the [Ollama Model Repository](https://ollama.com/)")
 text_input = st.text_input("Model Name")

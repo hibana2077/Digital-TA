@@ -17,6 +17,8 @@ EXTRACT_PROMPT = ChatPromptTemplate.from_template(
     "You are an Top algorithm, you need to according to user input extract information from the content. user input: {user_input}, content: {content}"
 )
 
+if 'chat_model' not in st.session_state:
+    st.session_state['chat_model'] = "llama2"
 
 def get_all_embeddings() -> list:
     response = requests.get(f"{BACKEND_SERVER}/embedding_count")
@@ -55,7 +57,7 @@ with embeddings_select_col:
 st.divider()
 
 chat_tmp = init_chat_history()
-llm = ChatOllama(model="llama2", base_url=OLLAMA_SERVER)
+llm = ChatOllama(model=st.session_state['chat_model'], base_url=OLLAMA_SERVER)
 user_input = st.chat_input("You can start a conversation with the AI Teaching Assistant here.")
 chain = chat_tmp | llm | StrOutputParser()
 
