@@ -78,6 +78,13 @@ if user_input:
             response = chain.invoke({})
             chat_tmp.append(AIMessage(response))
             st.session_state['chat_history'] = chat_tmp
+    
+    else:
+        with st.status("Digital TA Thinking..."):
+            chat_tmp.append(HumanMessage(ts.translate_text(user_input, translator=TRANSLATOR_PROVIDER, to_language="en")))
+            response = chain.invoke({})
+            chat_tmp.append(AIMessage(response))
+            st.session_state['chat_history'] = chat_tmp
 
 for message in st.session_state['chat_history'].messages:
     if isinstance(message, HumanMessage):
