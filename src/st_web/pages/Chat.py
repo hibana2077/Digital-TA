@@ -78,14 +78,14 @@ if user_input:
             
         with st.status("Digital TA Thinking..."):
             chat_tmp.append(SystemMessage(f"Extracted information from the content: {extracted_info}"))
-            chat_tmp.append(HumanMessage(ts.translate_text(user_input, translator=TRANSLATOR_PROVIDER, to_language="en")))
+            chat_tmp.append(HumanMessage(user_input))
             response = chain.invoke({})
             chat_tmp.append(AIMessage(response))
             st.session_state['chat_history'] = chat_tmp
     
     else:
         with st.status("Digital TA Thinking..."):
-            chat_tmp.append(HumanMessage(ts.translate_text(user_input, translator=TRANSLATOR_PROVIDER, to_language="en")))
+            chat_tmp.append(HumanMessage(user_input))
             response = chain.invoke({})
             chat_tmp.append(AIMessage(response))
             st.session_state['chat_history'] = chat_tmp
