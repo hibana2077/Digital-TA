@@ -52,6 +52,8 @@ with embeddings_select_col:
     embeddings = get_all_embeddings()
     embeddings_select = st.selectbox("Select an embedding", embeddings, index=None)
 
+st.divider()
+
 chat_tmp = init_chat_history()
 llm = ChatOllama(model="llama2", base_url=OLLAMA_SERVER)
 user_input = st.chat_input("You can start a conversation with the AI Teaching Assistant here.")
