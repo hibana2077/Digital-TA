@@ -58,7 +58,7 @@ user_input = st.chat_input("You can start a conversation with the AI Teaching As
 chain = chat_tmp | llm | StrOutputParser()
 
 if user_input:
-    if embeddings_select != "":
+    if embeddings_select != None:
         with st.status("Searching for book content..."):
             embeddings_search_result = embeddings_search(user_input, embeddings_select)
 
