@@ -21,6 +21,8 @@ def post_pull_model(model_name: str) -> dict:
 st.header("Models")
 
 st.markdown("## Local Models")
+if st.button("Refresh"):
+    local_models = get_local_models()
 local_models = get_local_models()
 st.table(local_models)
 
