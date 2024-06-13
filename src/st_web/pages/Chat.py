@@ -104,8 +104,13 @@ if user_input:
 for message in st.session_state['chat_history'].messages:
     if isinstance(message, HumanMessage):
         with st.chat_message("user"):
-            st.write(ts.translate_text(message.content, translator=TRANSLATOR_PROVIDER, to_language="zh-TW")) if enable_translation else st.write(message.content)
+            if enable_translation:
+                st.write(ts.translate_text(message.content, translator=TRANSLATOR_PROVIDER, to_language="zh-TW"))
+            else:
+                st.write(message.content)
     elif isinstance(message, AIMessage):
         with st.chat_message("assistant"):
-            st.write(ts.translate_text(message.content, translator=TRANSLATOR_PROVIDER, to_language="zh-TW")) if enable_translation else st.write(message.content)
-    
+            if enable_translation:
+                st.write(ts.translate_text(message.content, translator=TRANSLATOR_PROVIDER, to_language="zh-TW"))
+            else:
+                st.write(message.content)
