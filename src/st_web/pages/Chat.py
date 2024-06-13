@@ -62,6 +62,9 @@ with embeddings_select_col:
     embeddings = get_all_embeddings()
     embeddings_select = st.selectbox("Select an embedding", embeddings, index=None)
 
+with embeddings_select_col:
+    enable_translation = st.checkbox("Enable Translation", value=False)
+
 st.divider()
 
 chat_tmp = init_chat_history()
@@ -101,8 +104,8 @@ if user_input:
 for message in st.session_state['chat_history'].messages:
     if isinstance(message, HumanMessage):
         with st.chat_message("user"):
-            st.write(ts.translate_text(message.content, translator=TRANSLATOR_PROVIDER, to_language="zh-TW"))
+            st.write(ts.translate_text(message.content, translator=TRANSLATOR_PROVIDER, to_language="zh-TW")) if enable_translation else st.write(message.content)
     elif isinstance(message, AIMessage):
         with st.chat_message("assistant"):
-            st.write(ts.translate_text(message.content, translator=TRANSLATOR_PROVIDER, to_language="zh-TW"))
+            st.write(ts.translate_text(message.content, translator=TRANSLATOR_PROVIDER, to_language="zh-TW")) if enable_translation else st.write(message.content)
     
