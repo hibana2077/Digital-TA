@@ -39,14 +39,12 @@ def init_chat_history() -> ChatPromptTemplate:
     if 'chat_history' not in st.session_state:
         template = ChatPromptTemplate.from_messages([
             ('system', "You are an AI Teaching Assistant, you need to help students with their questions based on the content of the textbooks."),
-            ('system', "If your reference content has pages, please provide the page number in your response."),
-            ('system', """Example:
+            ('system', """If your reference content has pages, please provide the page number in your response. below is an Example:
 user_input: What specific feature of gliomas makes them particularly challenging to treat and differentiate from normal brain tissue?
 content: Page: 1, Pdf: Glioma.pdf : Glioma is a common type of tumor originating in the brain. About 33 percent of all brain tumors are gliomas, which originate in the glial cells that surround and support neurons in the brain, including astrocytes, oligodendrocytes and ependymal cells.
 Gliomas are called intra-axial brain tumors because they grow within the substance of the brain and often mix with normal brain tissue.
 response: The specific feature of gliomas that makes them particularly challenging to treat and differentiate from normal brain tissue is that they grow within the substance of the brain and often mix with normal brain tissue. This characteristic makes it difficult to clearly distinguish the boundaries between the tumor and healthy brain cells, complicating both surgical removal and treatment planning.
-you can find more information in page 1 of the Glioma.pdf
-""")
+you can find more information in page 1 of the Glioma.pdf""")
         ])
         st.session_state['chat_history'] = template
     else:
