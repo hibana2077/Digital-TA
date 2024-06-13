@@ -2,7 +2,7 @@
  * @Author: hibana2077 hibana2077@gmail.com
  * @Date: 2024-05-05 10:00:24
  * @LastEditors: hibana2077 hibana2077@gmaill.com
- * @LastEditTime: 2024-06-03 19:13:42
+ * @LastEditTime: 2024-06-13 16:38:43
  * @FilePath: \Digital-TA\README.md
  * @Description: 
 -->
@@ -22,7 +22,8 @@ The Digital TA project will incorporate several advanced features, including:
 
 - [x] Powered by a sophisticated Large Language Model.
 - [ ] Ability to store chat history for future reference.
-- [x] Support for importing textbooks and handling various document formats such as PPT, PDF, DOCX, and HTML.
+- [x] Support for importing textbooks and handling various document formats such as PDF.
+- [x] Ability to change to different language models.
 
 ## Roadmap
 
