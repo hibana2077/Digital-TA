@@ -27,6 +27,8 @@ services:
       LLM_MODEL: llama3-70b-8192
       LLM_API_TOKEN: "your-api-token-here"
       OLLAMA_SERVER: "http://ollama:11434"
+      REDIS_SERVER: "db"
+      REDIS_PORT: 6379
     depends_on:
       - db
     networks:

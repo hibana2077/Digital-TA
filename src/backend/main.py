@@ -13,6 +13,7 @@ from contextlib import asynccontextmanager
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
+import redis
 import os
 import time
 import uvicorn
@@ -20,8 +21,13 @@ import requests
 from fastapi.middleware.cors import CORSMiddleware
 
 ollama_server = os.getenv("OLLAMA_SERVER", "http://localhost:11434")
+redis_server = os.getenv("REDIS_SERVER", "localhost")
+redis_port = os.getenv("REDIS_PORT", 6379)
 HOST = os.getenv("HOST", "127.0.0.1")
 embeddings = OllamaEmbeddings(base_url=ollama_server)
+
+counter_db = redis.Redis(host=redis_server, port=redis_port, db=0) # string
+user_rec_db = redis.Redis(host=redis_server, port=redis_port, db=1) # hash
 
 app = FastAPI()
 
@@ -142,6 +148,24 @@ async def embed_query(data: dict):
     # do similarity search
     results = vectorstore.similarity_search(user_input)
     return {"results": results, "time": time.time() - ts}
+
+@app.post("/user_rec")
+async def user_rec(data: dict):
+    ts = time.time()
+    embedding_name: str = data["embedding_name"]
+    user_name: str = data["user_name"]
+    # save user input to redis
+    # name -> user_name, value -> {embedding_name: embedding_name, conversation_times: 1}
+    # check if user_name exists
+    if user_rec_db.hexists(user_name, embedding_name):
+        user_rec_db.hincrby(user_name, "conversation_times", 1)
+    else:
+        user_rec_db.hset(user_name, "embedding_name", embedding_name)
+        user_rec_db.hset(user_name, "conversation_times", 1)
+    # return the updated user_rec
+    info = user_rec_db.hgetall(user_name)
+    return {"user_rec": info, "time": time.time() - ts}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host=HOST, port=8081) # In docker need to change to 0.0.0.0
