@@ -37,6 +37,7 @@ app.add_middleware(
 async def lifespan(app: FastAPI):
     # pull model from ollama
     _ = requests.post(f"{ollama_server}/api/pull", json={"name": "llama2"})
+    _ = requests.post(f"{ollama_server}/api/pull", json={"name": "nomic-embed-text"})
 
 @app.get("/")
 def read_root():
@@ -120,7 +121,7 @@ async def create_embeddings(data: dict):
     auth_password: str = data["auth_password"]
     if auth_password == "admin":
         time_start = time.time()
-        embeddings = OllamaEmbeddings(model='llama2', base_url=ollama_server)
+        embeddings = OllamaEmbeddings(model='nomic-embed-text', base_url=ollama_server)
         loader = PyPDFLoader("files/" + file_name)
         pages = loader.load_and_split()
         vectorstore = FAISS.from_documents(pages, embeddings)
@@ -135,7 +136,7 @@ async def embed_query(data: dict):
     ts = time.time()
     embedding_name: str = data["embedding_name"]
     user_input: str = data["user_input"]
-    embeddings = OllamaEmbeddings(model='llama2', base_url=ollama_server)
+    embeddings = OllamaEmbeddings(model='nomic-embed-text', base_url=ollama_server)
     # load the embeddings
     vectorstore = FAISS.load_local("embeddings/" + embedding_name,embeddings,allow_dangerous_deserialization=True)
     # do similarity search
