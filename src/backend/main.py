@@ -28,6 +28,7 @@ embeddings = OllamaEmbeddings(base_url=ollama_server)
 
 counter_db = redis.Redis(host=redis_server, port=redis_port, db=0) # string
 user_rec_db = redis.Redis(host=redis_server, port=redis_port, db=1) # hash
+question_str_db = redis.Redis(host=redis_server, port=redis_port, db=2) # list
 
 app = FastAPI()
 
@@ -154,14 +155,20 @@ async def user_rec(data: dict):
     ts = time.time()
     embedding_name: str = data["embedding_name"]
     user_name: str = data["user_name"]
+    question_str: str = data["question_str"]
     # save user input to redis
     # name -> user_name, value -> {embedding_name: embedding_name, conversation_times: 1}
     # check if user_name exists
     if user_rec_db.hexists(user_name, embedding_name):
         user_rec_db.hincrby(user_name, "conversation_times", 1)
+        question_str_db_id = user_rec_db.hget(user_name, "question_str_id")
+        question_str_db.rpush(question_str_db_id, question_str)
     else:
+        question_str_id = counter_db.incr("question_str_id")
         user_rec_db.hset(user_name, "embedding_name", embedding_name)
         user_rec_db.hset(user_name, "conversation_times", 1)
+        user_rec_db.hset(user_name, "question_str_id", question_str_id)
+        question_str_db.rpush(question_str_id, question_str)
     # return the updated user_rec
     info = user_rec_db.hgetall(user_name)
     return {"user_rec": info, "time": time.time() - ts}
