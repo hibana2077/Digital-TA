@@ -43,7 +43,7 @@ app.add_middleware(
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # pull model from ollama
-    _ = requests.post(f"{ollama_server}/api/pull", json={"name": "llama2"})
+    _ = requests.post(f"{ollama_server}/api/pull", json={"name": "llama3.1:70b"})
     _ = requests.post(f"{ollama_server}/api/pull", json={"name": "nomic-embed-text"})
 
 @app.get("/")
