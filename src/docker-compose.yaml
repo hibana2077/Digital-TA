@@ -2,7 +2,7 @@ services:
   web:
     build: ./st_web
     ports:
-      - "80:80"
+      - "81:80"
     volumes:
       - ./st_web:/app
     environment:
