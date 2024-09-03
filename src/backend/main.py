@@ -30,13 +30,7 @@ counter_db = redis.Redis(host=redis_server, port=redis_port, db=0) # string
 user_rec_db = redis.Redis(host=redis_server, port=redis_port, db=1) # hash
 question_str_db = redis.Redis(host=redis_server, port=redis_port, db=2) # list
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # pull model from ollama
-    _ = await requests.post(f"{ollama_server}/api/pull", json={"name": "llama3.1:70b"})
-    _ = await requests.post(f"{ollama_server}/api/pull", json={"name": "nomic-embed-text"})
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -46,6 +40,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+async def startup_event():
+    # pull model from ollama
+    _ = await requests.post(f"{ollama_server}/api/pull", json={"name": "llama3.1:70b"})
+    _ = await requests.post(f"{ollama_server}/api/pull", json={"name": "nomic-embed-text"})
 
 
 @app.get("/")
