@@ -33,8 +33,8 @@ question_str_db = redis.Redis(host=redis_server, port=redis_port, db=2) # list
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # pull model from ollama
-    _ = requests.post(f"{ollama_server}/api/pull", json={"name": "llama3.1:70b"})
-    _ = requests.post(f"{ollama_server}/api/pull", json={"name": "nomic-embed-text"})
+    _ = await requests.post(f"{ollama_server}/api/pull", json={"name": "llama3.1:70b"})
+    _ = await requests.post(f"{ollama_server}/api/pull", json={"name": "nomic-embed-text"})
 
 app = FastAPI(lifespan=lifespan)
 
