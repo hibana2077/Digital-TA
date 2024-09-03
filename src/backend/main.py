@@ -43,8 +43,8 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup_event():
     # pull model from ollama
-    _ = await requests.post(f"{ollama_server}/api/pull", json={"name": "llama3.1:70b"})
-    _ = await requests.post(f"{ollama_server}/api/pull", json={"name": "nomic-embed-text"})
+    _ = requests.post(f"{ollama_server}/api/pull", json={"name": "llama3.1:70b"})
+    _ = requests.post(f"{ollama_server}/api/pull", json={"name": "nomic-embed-text"})
 
 
 @app.get("/")
