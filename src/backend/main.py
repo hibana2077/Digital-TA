@@ -143,7 +143,7 @@ async def create_embeddings(data: dict):
 async def embed_query(data: dict):
     ts = time.time()
     embedding_name: str = data["embedding_name"]
-    user_input: str = data["user_input"]
+    user_input: str = str(data["user_input"])
     embeddings = OllamaEmbeddings(model='nomic-embed-text', base_url=ollama_server)
     # load the embeddings
     vectorstore = FAISS.load_local("embeddings/" + embedding_name,embeddings,allow_dangerous_deserialization=True)
