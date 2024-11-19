@@ -4,7 +4,7 @@ RUN apt update && apt install -y python3 python3-pip curl wget iputils-ping
 
 RUN pip3 install --upgrade pip
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /app
 
