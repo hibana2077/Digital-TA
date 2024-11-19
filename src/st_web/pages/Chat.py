@@ -72,9 +72,9 @@ st.divider()
 chat_tmp = init_chat_history()
 # llm = ChatOllama(model=st.session_state['chat_model'], base_url=OLLAMA_SERVER)
 if st.session_state['chat_model'][-4:] == "groq":
-    llm = ChatGroq(model=st.session_state['chat_model'], api_key=GROQ_API_KEY)
+    llm = ChatGroq(model=st.session_state['chat_model'][0:-5], api_key=GROQ_API_KEY)
 elif st.session_state['chat_model'][-6:] == "openai":
-    llm = ChatOpenAI(model=st.session_state['chat_model'], api_key=OPEN_API_KEY)
+    llm = ChatOpenAI(model=st.session_state['chat_model'][0:-7], api_key=OPEN_API_KEY)
 else:
     llm = ChatOllama(model=st.session_state['chat_model'], base_url=OLLAMA_SERVER)
 user_input = st.chat_input("You can start a conversation with the AI Teaching Assistant here.")
