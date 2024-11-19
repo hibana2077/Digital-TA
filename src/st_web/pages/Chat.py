@@ -12,6 +12,8 @@ import os
 # _ = ts.preaccelerate_and_speedtest(timeout=1.5)
 OLLAMA_SERVER = os.getenv("OLLAMA_SERVER", "http://localhost:11434")
 BACKEND_SERVER = os.getenv("BACKEND_SERVER", "http://localhost:8081")
+OPEN_API_KEY = os.getenv("OPENAI_API_KEY", "sk_test_1234567890")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "gsk_test_1234567890")
 TRANSLATOR_PROVIDER = os.getenv("TRANSLATOR_PROVIDER", "google")
 EXTRACT_PROMPT = ChatPromptTemplate.from_template(
     "You are an Top algorithm, you need to according to user input extract information from the content. user input: {user_input}, content: {content}"
