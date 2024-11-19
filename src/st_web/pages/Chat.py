@@ -4,6 +4,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.messages.ai import AIMessage
 from langchain_core.messages.human import HumanMessage
 from langchain_core.messages.system import SystemMessage
+from langchain_groq.chat_models import ChatGroq
+from langchain_openai.chat_models import ChatOpenAI
 import streamlit as st
 import translators as ts
 import requests
@@ -63,12 +65,18 @@ with embeddings_select_col:
     embeddings_select = st.selectbox("Select an embedding", embeddings, index=None)
 
 with embeddings_select_col:
-    enable_translation = st.checkbox("Enable Translation", value=False)
+    enable_translation = st.checkbox("Enable Translation", value=False, disabled=True)
 
 st.divider()
 
 chat_tmp = init_chat_history()
-llm = ChatOllama(model=st.session_state['chat_model'], base_url=OLLAMA_SERVER)
+# llm = ChatOllama(model=st.session_state['chat_model'], base_url=OLLAMA_SERVER)
+if st.session_state['chat_model'][-4:] == "groq":
+    llm = ChatGroq(model=st.session_state['chat_model'], api_key=GROQ_API_KEY)
+elif st.session_state['chat_model'][-6:] == "openai":
+    llm = ChatOpenAI(model=st.session_state['chat_model'], api_key=OPEN_API_KEY)
+else:
+    llm = ChatOllama(model=st.session_state['chat_model'], base_url=OLLAMA_SERVER)
 user_input = st.chat_input("You can start a conversation with the AI Teaching Assistant here.")
 chain = chat_tmp | llm | StrOutputParser()
 
@@ -104,13 +112,13 @@ if user_input:
 for message in st.session_state['chat_history'].messages:
     if isinstance(message, HumanMessage):
         with st.chat_message("user"):
-            if enable_translation:
-                st.write(ts.translate_text(message.content, translator=TRANSLATOR_PROVIDER, to_language="zh-TW"))
-            else:
-                st.write(message.content)
+            # if enable_translation:
+            #     st.write(ts.translate_text(message.content, translator=TRANSLATOR_PROVIDER, to_language="zh-TW"))
+            # else:
+            st.write(message.content)
     elif isinstance(message, AIMessage):
         with st.chat_message("assistant"):
-            if enable_translation:
-                st.write(ts.translate_text(message.content, translator=TRANSLATOR_PROVIDER, to_language="zh-TW"))
-            else:
-                st.write(message.content)
+            # if enable_translation:
+            #     st.write(ts.translate_text(message.content, translator=TRANSLATOR_PROVIDER, to_language="zh-TW"))
+            # else:
+            st.write(message.content)
