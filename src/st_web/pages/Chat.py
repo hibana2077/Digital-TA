@@ -1,4 +1,3 @@
-from langchain_community.chat_models import ChatOllama
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.messages.ai import AIMessage
@@ -6,6 +5,7 @@ from langchain_core.messages.human import HumanMessage
 from langchain_core.messages.system import SystemMessage
 from langchain_groq.chat_models import ChatGroq
 from langchain_openai.chat_models import ChatOpenAI
+from langchain_ollama.chat_models import ChatOllama
 import streamlit as st
 import translators as ts
 import requests
@@ -22,7 +22,8 @@ EXTRACT_PROMPT = ChatPromptTemplate.from_template(
 )
 
 if 'chat_model' not in st.session_state:
-    st.session_state['chat_model'] = "llama3.1:70b"
+    # st.session_state['chat_model'] = "llama-3.2-90b-vision-preview-groq"
+    st.session_state['chat_model'] = "llama-3.1-70b-versatile"
 
 def get_all_embeddings() -> list:
     response = requests.get(f"{BACKEND_SERVER}/embedding_count")
@@ -63,9 +64,7 @@ with header_col:
 with embeddings_select_col:
     embeddings = get_all_embeddings()
     embeddings_select = st.selectbox("Select an embedding", embeddings, index=None)
-
-with embeddings_select_col:
-    enable_translation = st.checkbox("Enable Translation", value=False, disabled=True)
+    student_id = st.text_input("Student ID")
 
 st.divider()
 
