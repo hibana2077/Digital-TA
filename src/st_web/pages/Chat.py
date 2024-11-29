@@ -23,7 +23,7 @@ EXTRACT_PROMPT = ChatPromptTemplate.from_template(
 
 if 'chat_model' not in st.session_state:
     # st.session_state['chat_model'] = "llama-3.2-90b-vision-preview-groq"
-    st.session_state['chat_model'] = "llama-3.1-70b-versatile"
+    st.session_state['chat_model'] = "llama-3.1-70b-versatile-groq"
 
 def get_all_embeddings() -> list:
     response = requests.get(f"{BACKEND_SERVER}/embedding_count")
