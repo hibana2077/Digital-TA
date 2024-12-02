@@ -154,25 +154,30 @@ async def embed_query(data: dict):
 async def user_rec(data: dict):
     ts = time.time()
     embedding_name: str = data["embedding_name"]
-    user_name: str = data["user_name"]
+    student_id: str = data["student_id"]
     question_str: str = data["question_str"]
     # save user input to redis
-    # name -> user_name, value -> {embedding_name: embedding_name, conversation_times: 1}
-    # check if user_name exists
-    if user_rec_db.hexists(user_name, embedding_name):
-        user_rec_db.hincrby(user_name, "conversation_times", 1)
-        question_str_db_id = user_rec_db.hget(user_name, "question_str_id")
+    # name -> student_id, value -> {embedding_name: embedding_name, conversation_times: 1}
+    # check if student_id exists
+    if user_rec_db.hexists(student_id, embedding_name):
+        user_rec_db.hincrby(student_id, "conversation_times", 1)
+        question_str_db_id = user_rec_db.hget(student_id, "question_str_id")
         question_str_db.rpush(question_str_db_id, question_str)
     else:
         question_str_id = counter_db.incr("question_str_id")
-        user_rec_db.hset(user_name, "embedding_name", embedding_name)
-        user_rec_db.hset(user_name, "conversation_times", 1)
-        user_rec_db.hset(user_name, "question_str_id", question_str_id)
+        user_rec_db.hset(student_id, "embedding_name", embedding_name)
+        user_rec_db.hset(student_id, "conversation_times", 1)
+        user_rec_db.hset(student_id, "question_str_id", question_str_id)
         question_str_db.rpush(question_str_id, question_str)
     # return the updated user_rec
-    info = user_rec_db.hgetall(user_name)
+    info = user_rec_db.hgetall(student_id)
     return {"user_rec": info, "time": time.time() - ts}
 
+@app.get("/user_rec")
+async def get_user_rec(student_id: str):
+    ts = time.time()
+    info = user_rec_db.hgetall(student_id)
+    return {"user_rec": info, "time": time.time() - ts}
 
 if __name__ == "__main__":
     uvicorn.run(app, host=HOST, port=8081) # In docker need to change to 0.0.0.0
