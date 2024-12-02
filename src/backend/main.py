@@ -8,7 +8,7 @@ Description: Here is the main file for the FastAPI server.
 '''
 from langchain_community.vectorstores.faiss import FAISS
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_community.embeddings import OllamaEmbeddings
+from langchain_ollama.embeddings import OllamaEmbeddings
 from contextlib import asynccontextmanager
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from fastapi import FastAPI, File, UploadFile
@@ -159,25 +159,35 @@ async def user_rec(data: dict):
     # save user input to redis
     # name -> student_id, value -> {embedding_name: embedding_name, conversation_times: 1}
     # check if student_id exists
-    if user_rec_db.hexists(student_id, embedding_name):
-        user_rec_db.hincrby(student_id, "conversation_times", 1)
-        question_str_db_id = user_rec_db.hget(student_id, "question_str_id")
+    key = f"{student_id}:{embedding_name}"
+    if user_rec_db.hexists(key, "conversation_times"):
+        user_rec_db.hincrby(key, "conversation_times", 1)
+        question_str_db_id = user_rec_db.hget(key, "question_str_id")
         question_str_db.rpush(question_str_db_id, question_str)
     else:
         question_str_id = counter_db.incr("question_str_id")
-        user_rec_db.hset(student_id, "embedding_name", embedding_name)
-        user_rec_db.hset(student_id, "conversation_times", 1)
-        user_rec_db.hset(student_id, "question_str_id", question_str_id)
+        user_rec_db.hset(key, "conversation_times", 1)
+        user_rec_db.hset(key, "question_str_id", question_str_id)
         question_str_db.rpush(question_str_id, question_str)
     # return the updated user_rec
     info = user_rec_db.hgetall(student_id)
     return {"user_rec": info, "time": time.time() - ts}
 
 @app.get("/user_rec")
-async def get_user_rec(student_id: str):
+async def get_user_rec(data: dict):
     ts = time.time()
-    info = user_rec_db.hgetall(student_id)
-    return {"user_rec": info, "time": time.time() - ts}
+    student_id: str = data["student_id"]
+    embedding_name: str = data["embedding_name"]
+
+    # 使用 student_id:embedding_name 作為鍵檢索
+    key = f"{student_id}:{embedding_name}"
+    if not user_rec_db.exists(key):
+        return {"error": "No record found", "time": time.time() - ts}
+
+    # 獲取相關數據
+    question_str_id = user_rec_db.hget(key, "question_str_id")
+    questions = question_str_db.lrange(question_str_id, 0, -1)
+    return {"questions": questions, "time": time.time() - ts}
 
 if __name__ == "__main__":
     uvicorn.run(app, host=HOST, port=8081) # In docker need to change to 0.0.0.0

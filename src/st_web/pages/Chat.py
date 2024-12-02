@@ -6,6 +6,8 @@ from langchain_core.messages.system import SystemMessage
 from langchain_groq.chat_models import ChatGroq
 from langchain_openai.chat_models import ChatOpenAI
 from langchain_ollama.chat_models import ChatOllama
+from langchain_ollama.embeddings import OllamaEmbeddings
+from langchain_core.vectorstores import InMemoryVectorStore
 import streamlit as st
 import translators as ts
 import requests
@@ -81,6 +83,37 @@ chain = chat_tmp | llm | StrOutputParser()
 
 if user_input:
     if embeddings_select != None:
+
+        # check user input is similar to previous questions
+        questions = requests.get(f"{BACKEND_SERVER}/user_rec", json={"student_id": student_id, "embedding_name": embeddings_select, "question_str": user_input})
+        # using text embedding to check similarity
+        # if similarity > 0.9, return the response
+        # else, continue to search the content
+        if questions.status_code == 200:
+            questions = questions.json()
+            if questions["questions"]:
+                vectorstore = InMemoryVectorStore(
+                    questions["questions"],
+                    embedding=OllamaEmbeddings(model='nomic-embed-text', base_url=OLLAMA_SERVER)
+                )
+                retriever = vectorstore.as_retriever()
+                retrieved_documents = retriever.invoke(user_input)
+                if retrieved_documents:
+                    enable_guided_reply = True
+                else:
+                    enable_guided_reply = False
+                del vectorstore
+                del retriever
+                del retrieved_documents
+        else:
+            st.error("Failed to get user questions from the server.")
+
+        # save user input to redis
+        # name -> student_id, value -> {embedding_name: embedding_name, conversation_times: 1}
+        response = requests.post(f"{BACKEND_SERVER}/user_rec", json={"student_id": student_id, "embedding_name": embeddings_select, "question_str": user_input})
+        if response.status_code != 200:
+            st.error("Failed to save user input to the server.")
+
         with st.status("Searching for book content..."):
             embeddings_search_result = embeddings_search(user_input, embeddings_select)
 
@@ -96,6 +129,9 @@ if user_input:
             
         with st.status("Digital TA Thinking..."):
             chat_tmp.append(SystemMessage(f"Extracted information from the content: {extracted_info}"))
+            if enable_guided_reply:
+                chat_tmp.append(SystemMessage("The AI Teaching Assistant found similar questions from the student."))
+                chat_tmp.append(SystemMessage("You should provide a response in guided mode. Not directly respond to the user input, help student think and find the answer."))
             chat_tmp.append(HumanMessage(user_input))
             response = chain.invoke({})
             chat_tmp.append(AIMessage(response))
