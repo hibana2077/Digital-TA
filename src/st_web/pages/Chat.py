@@ -87,6 +87,8 @@ if user_input:
         if questions.status_code == 200:
             questions = questions.json()
             if "questions" in questions.keys():
+
+                # using text embedding to check similarity
                 vectorstore = InMemoryVectorStore(OllamaEmbeddings(model='nomic-embed-text', base_url=OLLAMA_SERVER))
                 temp_documents = []
                 for idx,question in enumerate(questions["questions"]):
@@ -96,12 +98,16 @@ if user_input:
                     query=user_input, k=1
                 )
                 retrieved_documents = [doc for doc, score in results if score > 0.75]
-                # for doc, score in results:
-                #     print(f"* [SIM={score:3f}] {doc.page_content} [{doc.metadata}]")
+
+                # if similarity > 0.75, enable guided reply
                 if len(retrieved_documents) > 0:
                     enable_guided_reply = True
                 else:
                     enable_guided_reply = False
+                
+                # clean up
+                del temp_documents
+                del results
                 del vectorstore
                 del retrieved_documents
         else:
