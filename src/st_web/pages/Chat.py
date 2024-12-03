@@ -83,7 +83,7 @@ chain = chat_tmp | llm | StrOutputParser()
 
 if user_input:
     if embeddings_select != None:
-
+        enable_guided_reply = False
         # check user input is similar to previous questions
         questions = requests.get(f"{BACKEND_SERVER}/user_rec", json={"student_id": student_id, "embedding_name": embeddings_select, "question_str": user_input})
         # using text embedding to check similarity
