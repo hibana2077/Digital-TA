@@ -24,7 +24,6 @@ ollama_server = os.getenv("OLLAMA_SERVER", "http://localhost:11434")
 redis_server = os.getenv("REDIS_SERVER", "localhost")
 redis_port = os.getenv("REDIS_PORT", 6379)
 HOST = os.getenv("HOST", "127.0.0.1")
-embeddings = OllamaEmbeddings(base_url=ollama_server)
 
 counter_db = redis.Redis(host=redis_server, port=redis_port, db=0) # string
 user_rec_db = redis.Redis(host=redis_server, port=redis_port, db=1) # hash
@@ -59,6 +58,7 @@ def read_root():
 @app.get("/test/embeddings")
 def test_embeddings(text: str):
     time_start = time.time()
+    embeddings = OllamaEmbeddings(base_url=ollama_server, model='nomic-embed-text')
     embeddings_list = embeddings.embed_query(text)
     time_end = time.time()
     return {"embeddings": embeddings_list, "time": time_end - time_start,"model_name":embeddings.model}
