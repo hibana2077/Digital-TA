@@ -46,7 +46,7 @@ def embeddings_search(user_input: str, embedding_name: str) -> dict:
 def init_chat_history() -> ChatPromptTemplate:
     if 'chat_history' not in st.session_state:
         template = ChatPromptTemplate.from_messages([
-            ('system', "You are an AI Teaching Assistant, you need to help students with their questions based on the content of system provide."),
+            ('system', "You are an AI Teaching Assistant, you need to help students with their questions based on the extracted information."),
         ])
         st.session_state['chat_history'] = template
     else:
