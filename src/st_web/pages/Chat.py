@@ -91,7 +91,7 @@ if user_input:
         # else, continue to search the content
         if questions.status_code == 200:
             questions = questions.json()
-            if questions["questions"]:
+            if "questions" in questions.keys():
                 vectorstore = InMemoryVectorStore(
                     questions["questions"],
                     embedding=OllamaEmbeddings(model='nomic-embed-text', base_url=OLLAMA_SERVER)
