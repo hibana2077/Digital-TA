@@ -8,6 +8,7 @@ from langchain_openai.chat_models import ChatOpenAI
 from langchain_ollama.chat_models import ChatOllama
 from langchain_ollama.embeddings import OllamaEmbeddings
 from langchain_core.vectorstores import InMemoryVectorStore
+from langchain_core.documents import Document
 import streamlit as st
 import translators as ts
 import requests
@@ -92,18 +93,22 @@ if user_input:
         if questions.status_code == 200:
             questions = questions.json()
             if "questions" in questions.keys():
-                vectorstore = InMemoryVectorStore(
-                    questions["questions"],
-                    embedding=OllamaEmbeddings(model='nomic-embed-text', base_url=OLLAMA_SERVER)
+                vectorstore = InMemoryVectorStore(OllamaEmbeddings(model='nomic-embed-text', base_url=OLLAMA_SERVER))
+                temp_documents = []
+                for idx,question in enumerate(questions["questions"]):
+                    temp_documents.append(Document(id=str(idx), page_content=question))
+                vectorstore.add_documents(documents=temp_documents)
+                results = vectorstore.similarity_search_with_score(
+                    query=user_input, k=1
                 )
-                retriever = vectorstore.as_retriever()
-                retrieved_documents = retriever.invoke(user_input)
-                if retrieved_documents:
+                retrieved_documents = [doc for doc, score in results if score > 0.75]
+                # for doc, score in results:
+                #     print(f"* [SIM={score:3f}] {doc.page_content} [{doc.metadata}]")
+                if len(retrieved_documents) > 0:
                     enable_guided_reply = True
                 else:
                     enable_guided_reply = False
                 del vectorstore
-                del retriever
                 del retrieved_documents
         else:
             st.error("Failed to get user questions from the server.")
