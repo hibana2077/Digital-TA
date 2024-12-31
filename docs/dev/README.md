@@ -10,11 +10,11 @@ Digital-TA is a system aimed at improving the efficiency of digital teaching ass
 
 ### 1. Tech Stack
 
-- **Frontend**: React.js + TailwindCSS
+- **Frontend**: Streamlit
 - **Backend**: FastAPI
 - **Database**: MongoDB + Redis
 - **Containerization**: Docker + Docker Compose
-- **Model**: Hugging Face Transformer Models
+- **Model**: Ollama + Groq
 
 ### 2. System Modules
 
